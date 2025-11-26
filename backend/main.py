@@ -25,10 +25,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load secrets from .streamlit/secrets.toml if available
+# Load secrets from config/secrets.toml if available
 secrets = {}
 try:
-    secrets_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".streamlit", "secrets.toml")
+    secrets_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "secrets.toml")
     if os.path.exists(secrets_path):
         with open(secrets_path, "rb") as f:
             secrets = tomli.load(f)

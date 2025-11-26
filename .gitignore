@@ -11,8 +11,9 @@ backend/__pycache__/
 .env
 .env.local
 
-# Secrets
+# Secrets and Config
 secrets.toml
+config/
 
 # Node
 frontend/node_modules/
