@@ -23,6 +23,7 @@ GOOGLE_APPLICATION_CREDENTIALS_JSON={"type":"service_account",...}
 
 ### 3. Generate Domain
 - Settings → Networking → Generate Domain
+- **Railway will detect port `8080` - select that option**
 - Copy URL (e.g., `https://email-search-backend.railway.app`)
 
 ## Frontend Deployment
@@ -57,12 +58,12 @@ FRONTEND_URL=https://your-frontend-url.railway.app
 4. Check logs if issues occur
 
 ## Files Created for Deployment
-- `railway.json` - Railway configuration
-- `nixpacks.toml` - Nixpacks build config
-- `Procfile` - Process definition
-- `runtime.txt` - Python version
-- `frontend/server.js` - Static file server
+- `Procfile` - Process definition (start command)
+- `runtime.txt` - Python version specification
+- `frontend/server.js` - Static file server for React build
 - `frontend/.env.production.example` - Environment template
+
+> **Note**: Railway auto-detects the configuration from `Procfile` and `runtime.txt`. Custom files like `railway.json` or `nixpacks.toml` are not needed and can cause build issues.
 
 ## Common Issues
 - **BigQuery auth fails**: Check `GOOGLE_APPLICATION_CREDENTIALS_JSON` is valid JSON

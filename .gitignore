@@ -10,6 +10,7 @@ backend/__pycache__/
 # Environment variables
 .env
 .env.local
+*.env.production
 
 # Secrets and Config
 secrets.toml
@@ -34,4 +35,3 @@ Thumbs.db
 *.log
 
 # Notes
-RAILWAY_DEPLOYMENT.md

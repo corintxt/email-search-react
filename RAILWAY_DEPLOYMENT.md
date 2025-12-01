@@ -84,13 +84,29 @@ If you prefer, you can use Railway's file upload feature:
 
 ### Step 4: Deploy Backend
 
-1. Railway will automatically deploy your backend
-2. Wait for the deployment to complete (check the **Deployments** tab)
-3. Once deployed, go to **Settings** → **Networking**
+1. Railway will automatically detect your Python project using:
+   - **`runtime.txt`** - Specifies Python 3.9
+   - **`Procfile`** - Defines the start command: `web: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT`
+   - **`backend/requirements.txt`** - Lists Python dependencies
+2. Railway will automatically:
+   - Install Python 3.9
+   - Install dependencies from `requirements.txt`
+   - Start the application using the command from `Procfile`
+3. Wait for the deployment to complete (check the **Deployments** tab)
+
+> **Note**: Railway's auto-detection works best without custom configuration files like `railway.json` or `nixpacks.toml`. The combination of `Procfile` and `runtime.txt` is sufficient.
+
+### Step 5: Configure Networking
+
+1. Go to **Settings** → **Networking**
+2. Railway should automatically detect the port from your `Procfile` (which uses `$PORT`)
+3. **If Railway asks for a port number, enter `8080`** (this is just for the UI - Railway will use its dynamic `$PORT` at runtime)
 4. Click **"Generate Domain"** to get a public URL
 5. **Copy this URL** - you'll need it for the frontend (e.g., `https://email-search-backend.railway.app`)
 
-### Step 5: Verify Backend
+> **Note**: The `Procfile` uses `$PORT` which Railway automatically assigns at runtime. Your backend code reads this via `os.getenv("PORT", 8080)`. The port number you enter in the UI (8000) is just a placeholder.
+
+### Step 6: Verify Backend
 
 1. Navigate to `https://your-backend-url.railway.app/docs`
 2. You should see the FastAPI interactive documentation
