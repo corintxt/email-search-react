@@ -8,6 +8,7 @@ function App() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
+  const [datasetInfo, setDatasetInfo] = useState(null);
 
   const [filters, setFilters] = useState({
     limit: 100,
@@ -19,6 +20,20 @@ function App() {
     show_summaries: false,
     category_filter: null
   });
+
+  // Fetch dataset configuration on mount
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const response = await axios.get(`${apiUrl}/api/config`);
+        setDatasetInfo(response.data);
+      } catch (error) {
+        console.error("Failed to fetch config", error);
+      }
+    };
+    fetchConfig();
+  }, []);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -50,7 +65,11 @@ function App() {
       <div className="main-content">
         <header className="app-header">
           <h1>Email Search Tool</h1>
-          <div className="dataset-info">Target dataset: <code>{import.meta.env.VITE_DATASET || 'Configured Dataset'}</code></div>
+          {datasetInfo && (
+            <div className="dataset-info">
+              Target dataset: <code>{datasetInfo.dataset}.{datasetInfo.table}</code>
+            </div>
+          )}
         </header>
 
         <div className="search-bar-container">

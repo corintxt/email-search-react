@@ -110,6 +110,15 @@ async def get_categories():
         print(f"Error fetching categories: {e}")
         return {"categories": []}
 
+@app.get("/api/config")
+async def get_config():
+    """Return dataset configuration for frontend display"""
+    return {
+        # "project_id": PROJECT_ID,
+        "dataset": DATASET,
+        "table": TABLE
+    }
+
 @app.post("/api/search")
 async def search_emails(request: SearchRequest):
     if not client:
