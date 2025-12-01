@@ -18,7 +18,12 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
     }, []);
 
     const handleChange = (key, value) => {
-        setFilters(prev => ({ ...prev, [key]: value }));
+        // Compute next filters from current props (avoid side-effects in setState updater)
+        const next = { ...filters, [key]: value };
+        setFilters(next);
+        if (key === 'category_filter' && typeof onSearch === 'function') {
+            onSearch(next);
+        }
     };
 
     return (

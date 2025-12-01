@@ -137,7 +137,9 @@ async def search_emails(request: SearchRequest):
         except:
             pass
 
-    needs_summary_join = (request.show_summaries and SUMMARY_TABLE) or (request.category_filter and summary_table_available)
+    # Always include summaries when the summary table is available so the UI can
+    # instantly show/hide without refetching or requerying.
+    needs_summary_join = summary_table_available
     table_prefix = "e." if needs_summary_join else ""
 
     # Keyword search
