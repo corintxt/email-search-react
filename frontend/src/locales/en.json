@@ -1,0 +1,46 @@
+{
+  "header": {
+    "title": "Email Search Tool",
+    "datasetInfo": "Target dataset"
+  },
+  "search": {
+    "placeholder": "Enter keywords to search...",
+    "button": "Search",
+    "searching": "Searching..."
+  },
+  "sidebar": {
+    "searchFilters": "Search Filters",
+    "maxResults": "Max results",
+    "searchIn": "Search in",
+    "allFields": "All fields",
+    "subject": "Subject",
+    "body": "Body",
+    "filterByCategory": "Filter by category",
+    "allCategories": "All categories",
+    "emailFilters": "Email Filters",
+    "fromLabel": "From (sender contains)",
+    "toLabel": "To (recipient contains)",
+    "dateRange": "Date Range",
+    "filterByDate": "Filter by date range",
+    "displayOptions": "Display Options",
+    "showSummary": "Show summary"
+  },
+  "results": {
+    "found": "Found {{count}} results",
+    "noResults": "⚠️ No results found. Try different search terms or filters.",
+    "totalResults": "Total Results",
+    "uniqueSenders": "Unique Senders",
+    "uniqueRecipients": "Unique Recipients",
+    "dateRange": "Date Range",
+    "exportButton": "📥 Export Results to CSV",
+    "date": "Date",
+    "from": "From",
+    "to": "To",
+    "body": "Body",
+    "viewFull": "🔗 View Full",
+    "collapse": "Collapse",
+    "fullEmailBody": "Full Email Body",
+    "sourceFile": "Source file",
+    "loading": "🔍 Searching emails..."
+  }
+}

@@ -1,9 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import ResultItem from './ResultItem';
 
 const ResultList = ({ results, query, showSummary }) => {
+    const { t } = useTranslation();
+    
     if (!results || results.length === 0) {
-        return <div className="no-results">⚠️ No results found. Try different search terms or filters.</div>;
+        return <div className="no-results">{t('results.noResults')}</div>;
     }
 
     const uniqueSenders = new Set(results.map(r => r.sender)).size;
@@ -41,28 +44,28 @@ const ResultList = ({ results, query, showSummary }) => {
 
     return (
         <div className="result-list">
-            <div className="results-success">✅ Found {results.length} results</div>
+            <div className="results-success">✅ {t('results.found', { count: results.length })}</div>
 
             <div className="stats-grid">
                 <div className="stat-box">
-                    <div className="stat-label">Total Results</div>
+                    <div className="stat-label">{t('results.totalResults')}</div>
                     <div className="stat-value">{results.length}</div>
                 </div>
                 <div className="stat-box">
-                    <div className="stat-label">Unique Senders</div>
+                    <div className="stat-label">{t('results.uniqueSenders')}</div>
                     <div className="stat-value">{uniqueSenders}</div>
                 </div>
                 <div className="stat-box">
-                    <div className="stat-label">Unique Recipients</div>
+                    <div className="stat-label">{t('results.uniqueRecipients')}</div>
                     <div className="stat-value">{uniqueRecipients}</div>
                 </div>
                 <div className="stat-box">
-                    <div className="stat-label">Date Range</div>
+                    <div className="stat-label">{t('results.dateRange')}</div>
                     <div className="stat-value-small">{minDate} to {maxDate}</div>
                 </div>
             </div>
 
-            <button onClick={handleExport} className="export-btn-main">📥 Export Results to CSV</button>
+            <button onClick={handleExport} className="export-btn-main">{t('results.exportButton')}</button>
 
             <hr />
 

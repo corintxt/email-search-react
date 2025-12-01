@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
 const Sidebar = ({ filters, setFilters, onSearch }) => {
+    const { t } = useTranslation();
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -9,13 +11,13 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
             try {
                 const apiUrl = import.meta.env.VITE_API_URL || '';
                 const res = await axios.get(`${apiUrl}/api/categories`);
-                setCategories(['All categories', ...res.data.categories]);
+                setCategories([t('sidebar.allCategories'), ...res.data.categories]);
             } catch (err) {
                 console.error("Failed to fetch categories", err);
             }
         };
         fetchCategories();
-    }, []);
+    }, [t]);
 
     const handleChange = (key, value) => {
         // Compute next filters from current props (avoid side-effects in setState updater)
@@ -28,10 +30,10 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
 
     return (
         <div className="sidebar">
-            <h2>Search Filters</h2>
+            <h2>{t('sidebar.searchFilters')}</h2>
 
             <div className="filter-group">
-                <label>Max results: {filters.limit}</label>
+                <label>{t('sidebar.maxResults')}: {filters.limit}</label>
                 <input
                     type="range"
                     min="50"
@@ -43,17 +45,21 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
             </div>
 
             <div className="filter-group">
-                <label>Search in:</label>
+                <label>{t('sidebar.searchIn')}:</label>
                 <div className="radio-group">
-                    {['All fields', 'Subject', 'Body'].map(type => (
-                        <label key={type}>
+                    {[
+                        { value: 'All fields', label: t('sidebar.allFields') },
+                        { value: 'Subject', label: t('sidebar.subject') },
+                        { value: 'Body', label: t('sidebar.body') }
+                    ].map(type => (
+                        <label key={type.value}>
                             <input
                                 type="radio"
-                                value={type}
-                                checked={filters.search_type === type}
+                                value={type.value}
+                                checked={filters.search_type === type.value}
                                 onChange={(e) => handleChange('search_type', e.target.value)}
                             />
-                            {type}
+                            {type.label}
                         </label>
                     ))}
                 </div>
@@ -61,10 +67,10 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
 
             {categories.length > 1 && (
                 <div className="filter-group">
-                    <label>Filter by category:</label>
+                    <label>{t('sidebar.filterByCategory')}:</label>
                     <select
-                        value={filters.category_filter || 'All categories'}
-                        onChange={(e) => handleChange('category_filter', e.target.value === 'All categories' ? null : e.target.value)}
+                        value={filters.category_filter || t('sidebar.allCategories')}
+                        onChange={(e) => handleChange('category_filter', e.target.value === t('sidebar.allCategories') ? null : e.target.value)}
                     >
                         {categories.map(cat => (
                             <option key={cat} value={cat}>{cat}</option>
@@ -73,9 +79,9 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
                 </div>
             )}
 
-            <h3>Email Filters</h3>
+            <h3>{t('sidebar.emailFilters')}</h3>
             <div className="filter-group">
-                <label>From (sender contains):</label>
+                <label>{t('sidebar.fromLabel')}:</label>
                 <input
                     type="text"
                     value={filters.sender_filter || ''}
@@ -84,7 +90,7 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
             </div>
 
             <div className="filter-group">
-                <label>To (recipient contains):</label>
+                <label>{t('sidebar.toLabel')}:</label>
                 <input
                     type="text"
                     value={filters.recipient_filter || ''}
@@ -92,7 +98,7 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
                 />
             </div>
 
-            <h3>Date Range</h3>
+            <h3>{t('sidebar.dateRange')}</h3>
             <div className="filter-group">
                 <label>
                     <input
@@ -109,7 +115,7 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
                             }
                         }}
                     />
-                    Filter by date range
+                    {t('sidebar.filterByDate')}
                 </label>
                 {filters.date_from && (
                     <div className="date-inputs">
@@ -127,7 +133,7 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
                 )}
             </div>
 
-            <h3>Display Options</h3>
+            <h3>{t('sidebar.displayOptions')}</h3>
             <div className="filter-group">
                 <label>
                     <input
@@ -135,7 +141,7 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
                         checked={filters.show_summaries}
                         onChange={(e) => handleChange('show_summaries', e.target.checked)}
                     />
-                    Show summary
+                    {t('sidebar.showSummary')}
                 </label>
             </div>
 

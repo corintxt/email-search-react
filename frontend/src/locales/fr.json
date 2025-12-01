@@ -1,0 +1,46 @@
+{
+  "header": {
+    "title": "Email Search Tool",
+    "datasetInfo": "Ensemble de données cible"
+  },
+  "search": {
+    "placeholder": "Entrez des mots-clés pour rechercher...",
+    "button": "Rechercher",
+    "searching": "Recherche en cours..."
+  },
+  "sidebar": {
+    "searchFilters": "Filtres de recherche",
+    "maxResults": "Résultats maximum",
+    "searchIn": "Rechercher dans",
+    "allFields": "Tous les champs",
+    "subject": "Objet",
+    "body": "Corps",
+    "filterByCategory": "Filtrer par catégorie",
+    "allCategories": "Toutes les catégories",
+    "emailFilters": "Filtres d'e-mail",
+    "fromLabel": "De (l'expéditeur contient)",
+    "toLabel": "À (le destinataire contient)",
+    "dateRange": "Plage de dates",
+    "filterByDate": "Filtrer par plage de dates",
+    "displayOptions": "Options d'affichage",
+    "showSummary": "Afficher le résumé"
+  },
+  "results": {
+    "found": "{{count}} résultats trouvés",
+    "noResults": "⚠️ Aucun résultat trouvé. Essayez d'autres termes de recherche ou filtres.",
+    "totalResults": "Résultats totaux",
+    "uniqueSenders": "Expéditeurs uniques",
+    "uniqueRecipients": "Destinataires uniques",
+    "dateRange": "Plage de dates",
+    "exportButton": "📥 Exporter les résultats en CSV",
+    "date": "Date",
+    "from": "De",
+    "to": "À",
+    "body": "Corps",
+    "viewFull": "🔗 Voir complet",
+    "collapse": "Réduire",
+    "fullEmailBody": "Corps complet de l'e-mail",
+    "sourceFile": "Fichier source",
+    "loading": "🔍 Recherche d'e-mails..."
+  }
+}

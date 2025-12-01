@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Highlight = ({ text, query }) => {
     if (!query || !text) return <span>{text}</span>;
@@ -15,6 +16,7 @@ const Highlight = ({ text, query }) => {
 };
 
 const ResultItem = ({ result, query, showSummary }) => {
+    const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
 
     return (
@@ -24,13 +26,13 @@ const ResultItem = ({ result, query, showSummary }) => {
                     <h5><Highlight text={result.Subject} query={query} /></h5>
                 </div>
                 <div className="result-date">
-                    <strong>Date:</strong> {result.date}
+                    <strong>{t('results.date')}:</strong> {result.date}
                 </div>
             </div>
 
             <div className="result-meta">
-                <div><strong>From:</strong> {result.sender}</div>
-                <div><strong>To:</strong> {result.recipient}</div>
+                <div><strong>{t('results.from')}:</strong> {result.sender}</div>
+                <div><strong>{t('results.to')}:</strong> {result.recipient}</div>
             </div>
 
             <div className="result-body">
@@ -38,7 +40,7 @@ const ResultItem = ({ result, query, showSummary }) => {
                     <p><em><Highlight text={result.summary} query={query} /></em></p>
                 ) : (
                     <p>
-                        <strong>Body: </strong>
+                        <strong>{t('results.body')}: </strong>
                         <Highlight text={result.Body.substring(0, 500)} query={query} />
                         {result.Body.length > 500 && '...'}
                     </p>
@@ -49,16 +51,16 @@ const ResultItem = ({ result, query, showSummary }) => {
                 {result.category && (
                     <span className="category-badge">{result.category}</span>
                 )}
-                <span className="result-id">ID: {result.id} • Source file: {result.filename}</span>
+                <span className="result-id">ID: {result.id} • {t('results.sourceFile')}: {result.filename}</span>
             </div>
 
             <button className="view-full-btn" onClick={() => setExpanded(!expanded)}>
-                {expanded ? 'Collapse' : '🔗 View Full'}
+                {expanded ? t('results.collapse') : t('results.viewFull')}
             </button>
 
             {expanded && (
                 <div className="full-body">
-                    <h6>Full Email Body</h6>
+                    <h6>{t('results.fullEmailBody')}</h6>
                     <div className="body-content">
                         <Highlight text={result.Body} query={query} />
                     </div>

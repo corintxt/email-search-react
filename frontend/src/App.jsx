@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import Sidebar from './components/Sidebar';
 import ResultList from './components/ResultList';
 import './index.css';
 
 function App() {
+  const { t, i18n } = useTranslation();
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
@@ -64,12 +66,30 @@ function App() {
 
       <div className="main-content">
         <header className="app-header">
-          <h1>Email Search Tool • AFP-DDV</h1>
-          {datasetInfo && (
-            <div className="dataset-info">
-              Target dataset: <code>{datasetInfo.dataset}.{datasetInfo.table}</code>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h1>{t('header.title')} • AFP-DDV</h1>
+              {datasetInfo && (
+                <div className="dataset-info">
+                  {t('header.datasetInfo')}: <code>{datasetInfo.dataset}.{datasetInfo.table}</code>
+                </div>
+              )}
             </div>
-          )}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button 
+                onClick={() => i18n.changeLanguage('en')} 
+                className={`lang-btn ${i18n.language === 'en' ? 'active' : ''}`}
+              >
+                EN
+              </button>
+              <button 
+                onClick={() => i18n.changeLanguage('fr')} 
+                className={`lang-btn ${i18n.language === 'fr' ? 'active' : ''}`}
+              >
+                FR
+              </button>
+            </div>
+          </div>
         </header>
 
         <div className="search-bar-container">
@@ -78,17 +98,17 @@ function App() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Enter keywords to search..."
+              placeholder={t('search.placeholder')}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             />
           </div>
           <button className="search-button" onClick={handleSearch} disabled={loading}>
-            {loading ? 'Searching...' : '🔍 Search'}
+            {loading ? t('search.searching') : `🔍 ${t('search.button')}`}
           </button>
         </div>
 
         {loading ? (
-          <div className="loading-spinner">🔍 Searching emails...</div>
+          <div className="loading-spinner">{t('results.loading')}</div>
         ) : (
           <ResultList results={results} query={query} showSummary={filters.show_summaries} />
         )}
