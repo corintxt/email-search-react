@@ -42,9 +42,51 @@ except Exception as e:
 # Configuration - Priority: Env Vars > Secrets > Defaults
 PROJECT_ID = os.getenv("PROJECT_ID") or secrets.get("PROJECT_ID")
 DATASET = os.getenv("DATASET") or secrets.get("DATASET")
-TABLE = os.getenv("TABLE") or secrets.get("TABLE")
-SUMMARY_TABLE = os.getenv("SUMMARY") or secrets.get("SUMMARY")
 APP_PASSWORD = os.getenv("APP_PASSWORD") or secrets.get("APP_PASSWORD", "password123")
+
+# Load dataset tables configuration
+# Format: JSON array of {"id": "...", "label": "...", "table": "...", "summary": "..."}
+import json
+
+def load_dataset_tables():
+    """Load dataset tables from env var or secrets, with fallback to legacy single table config."""
+    tables_json = os.getenv("DATASET_TABLES") or secrets.get("DATASET_TABLES")
+    
+    if tables_json:
+        try:
+            return json.loads(tables_json)
+        except json.JSONDecodeError as e:
+            print(f"Warning: Failed to parse DATASET_TABLES: {e}")
+    
+    # Fallback to legacy single table configuration
+    legacy_table = os.getenv("TABLE") or secrets.get("TABLE")
+    legacy_summary = os.getenv("SUMMARY") or secrets.get("SUMMARY")
+    
+    if legacy_table:
+        return [{
+            "id": "default",
+            "label": legacy_table,
+            "table": legacy_table,
+            "summary": legacy_summary
+        }]
+    
+    return []
+
+DATASET_TABLES = load_dataset_tables()
+
+def get_table_config(table_id: str = None):
+    """Get table configuration by ID, or return the first table if no ID provided."""
+    if not DATASET_TABLES:
+        return None, None
+    
+    if table_id:
+        for t in DATASET_TABLES:
+            if t["id"] == table_id:
+                return t["table"], t.get("summary")
+    
+    # Default to first table
+    first = DATASET_TABLES[0]
+    return first["table"], first.get("summary")
 
 
 # Initialize BigQuery client
@@ -86,6 +128,7 @@ class SearchRequest(BaseModel):
     recipient_filter: Optional[str] = None
     show_summaries: bool = False
     category_filter: Optional[str] = None
+    table_id: Optional[str] = None  # ID of the selected table pair
 
 class AuthRequest(BaseModel):
     password: str
@@ -97,7 +140,9 @@ async def check_auth(request: AuthRequest):
     raise HTTPException(status_code=401, detail="Incorrect password")
 
 @app.get("/api/categories")
-async def get_categories():
+async def get_categories(table_id: Optional[str] = Query(None)):
+    TABLE, SUMMARY_TABLE = get_table_config(table_id)
+    
     if not SUMMARY_TABLE or not client:
         return {"categories": []}
     
@@ -114,15 +159,20 @@ async def get_categories():
 async def get_config():
     """Return dataset configuration for frontend display"""
     return {
-        # "project_id": PROJECT_ID,
         "dataset": DATASET,
-        "table": TABLE
+        "tables": DATASET_TABLES
     }
 
 @app.post("/api/search")
 async def search_emails(request: SearchRequest):
     if not client:
         raise HTTPException(status_code=500, detail="BigQuery client not initialized")
+    
+    # Get table configuration for selected table
+    TABLE, SUMMARY_TABLE = get_table_config(request.table_id)
+    
+    if not TABLE:
+        raise HTTPException(status_code=400, detail="No table configured")
 
     # Build WHERE clause
     query_params = []

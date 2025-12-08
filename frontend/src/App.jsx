@@ -9,8 +9,10 @@ function App() {
   const { t, i18n } = useTranslation();
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
   const [datasetInfo, setDatasetInfo] = useState(null);
+  const [selectedTableId, setSelectedTableId] = useState(null);
 
   const [filters, setFilters] = useState({
     limit: 100,
@@ -26,6 +28,7 @@ function App() {
   // Refs to always have access to current values
   const filtersRef = useRef(filters);
   const queryRef = useRef(query);
+  const selectedTableIdRef = useRef(selectedTableId);
 
   // Keep refs in sync with state
   useEffect(() => {
@@ -36,6 +39,10 @@ function App() {
     queryRef.current = query;
   }, [query]);
 
+  useEffect(() => {
+    selectedTableIdRef.current = selectedTableId;
+  }, [selectedTableId]);
+
   // Fetch dataset configuration on mount
   useEffect(() => {
     const fetchConfig = async () => {
@@ -43,6 +50,10 @@ function App() {
         const apiUrl = import.meta.env.VITE_API_URL || '';
         const response = await axios.get(`${apiUrl}/api/config`);
         setDatasetInfo(response.data);
+        // Set default selected table to first available
+        if (response.data.tables && response.data.tables.length > 0) {
+          setSelectedTableId(response.data.tables[0].id);
+        }
       } catch (error) {
         console.error("Failed to fetch config", error);
       }
@@ -54,18 +65,21 @@ function App() {
     // Ignore if overrideFilters is an event object (from onClick handlers)
     const isValidFilters = overrideFilters && typeof overrideFilters === 'object' && 'limit' in overrideFilters;
     setLoading(true);
+    setError(null);
     try {
       // Use environment variable for API URL in production, fallback to proxy in development
       const apiUrl = import.meta.env.VITE_API_URL || '';
       const payload = {
         query: queryRef.current,
+        table_id: selectedTableIdRef.current,
         ...(isValidFilters ? overrideFilters : filtersRef.current)
       };
       const response = await axios.post(`${apiUrl}/api/search`, payload);
       setResults(response.data.results);
-    } catch (error) {
-      console.error("Search failed", error);
-      alert("Search failed. Please try again.");
+    } catch (err) {
+      console.error("Search failed", err);
+      setError("Search failed - database configuration error");
+      setResults([]);
     } finally {
       setLoading(false);
     }
@@ -77,6 +91,7 @@ function App() {
         filters={filters}
         setFilters={setFilters}
         onSearch={handleSearch}
+        selectedTableId={selectedTableId}
       />
 
       <div className="main-content">
@@ -84,9 +99,27 @@ function App() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <h1>{t('header.title')} • AFP-DDV</h1>
-              {datasetInfo && (
+              {datasetInfo && datasetInfo.tables && datasetInfo.tables.length > 0 && (
                 <div className="dataset-info">
-                  {t('header.datasetInfo')}: <code>{datasetInfo.dataset}.{datasetInfo.table}</code>
+                  {t('header.datasetInfo')}:{' '}
+                  {datasetInfo.tables.length === 1 ? (
+                    <code>{datasetInfo.dataset}.{datasetInfo.tables[0].table}</code>
+                  ) : (
+                    <select
+                      className="dataset-select"
+                      value={selectedTableId || ''}
+                      onChange={(e) => {
+                        setSelectedTableId(e.target.value);
+                        setResults([]); // Clear results when switching tables
+                      }}
+                    >
+                      {datasetInfo.tables.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               )}
             </div>
@@ -124,6 +157,8 @@ function App() {
 
         {loading ? (
           <div className="loading-spinner">{t('results.loading')}</div>
+        ) : error ? (
+          <div className="error-message">{error}</div>
         ) : (
           <ResultList results={results} query={query} showSummary={filters.show_summaries} />
         )}

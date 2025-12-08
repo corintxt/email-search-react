@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
-const Sidebar = ({ filters, setFilters, onSearch }) => {
+const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
     const { t } = useTranslation();
     const [categories, setCategories] = useState([]);
 
@@ -10,14 +10,15 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
         const fetchCategories = async () => {
             try {
                 const apiUrl = import.meta.env.VITE_API_URL || '';
-                const res = await axios.get(`${apiUrl}/api/categories`);
+                const params = selectedTableId ? `?table_id=${selectedTableId}` : '';
+                const res = await axios.get(`${apiUrl}/api/categories${params}`);
                 setCategories([t('sidebar.allCategories'), ...res.data.categories]);
             } catch (err) {
                 console.error("Failed to fetch categories", err);
             }
         };
         fetchCategories();
-    }, [t]);
+    }, [t, selectedTableId]);
 
     const handleChange = (key, value) => {
         // Compute next filters from current props (avoid side-effects in setState updater)

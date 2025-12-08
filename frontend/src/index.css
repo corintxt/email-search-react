@@ -220,6 +220,43 @@ body {
   font-weight: 600;
 }
 
+.dataset-info code {
+  font-family: inherit;
+}
+
+.dataset-select {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 0.75rem;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
+  padding: 0.125rem 0.375rem;
+  margin-left: 0.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.25rem center;
+  padding-right: 1.25rem;
+}
+
+.dataset-select:hover {
+  background-color: #333;
+}
+
+.dataset-select:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.dataset-select option {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
 /* Search Bar */
 .search-bar-container {
   display: flex;
@@ -562,6 +599,17 @@ body {
   padding: 3rem;
   text-align: center;
   color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.error-message {
+  padding: 2rem;
+  text-align: center;
+  color: #b91c1c;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
   font-size: 0.875rem;
   font-weight: 600;
 }
